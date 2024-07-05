@@ -151,7 +151,7 @@ class NosotrosScreen extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    // Implementa la acción al presionar Instagram
+                    // se implementara la acción al presionar Instagram
                   },
                   child: Image.asset(
                     'assets/img/instagram_logo.png', // Ruta de la imagen de Instagram
@@ -162,7 +162,7 @@ class NosotrosScreen extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    // Implementa la acción al presionar Twitter
+                    // se implementara la acción al presionar Twitter
                   },
                   child: Image.asset(
                     'assets/img/twitter_logo.png', // Ruta de la imagen de Twitter

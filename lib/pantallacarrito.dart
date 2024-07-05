@@ -8,46 +8,61 @@ class PantallaCarrito extends StatelessWidget {
   const PantallaCarrito({super.key});
 
   Future<void> _enviarPedidoPorWhatsApp(
-      BuildContext context, String detallesDelCarrito) async {
+      BuildContext context, Carrito carrito) async {
     String numeroDeTelefono = '50557245824';
+    String detallesDelCarrito = await _obtenerDetallesDelCarrito(carrito);
     String mensaje =
         'Hola, he realizado un pedido con los siguientes detalles:\n\n$detallesDelCarrito';
     String encodedMessage = Uri.encodeComponent(mensaje);
 
     Uri uri = Uri.parse('https://wa.me/$numeroDeTelefono?text=$encodedMessage');
 
-    bool canLaunchUrl;
     try {
-      // ignore: deprecated_member_use
-      canLaunchUrl = await canLaunch(uri.toString());
-      if (canLaunchUrl) {
-        // ignore: deprecated_member_use
-        await launch(uri.toString());
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Mensaje enviado por WhatsApp'),
-        ));
+      // Check if the URL can be launched
+      if (await canLaunchUrl(uri)) {
+        // Launch the URL using an external application
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Mensaje enviado por WhatsApp'),
+          ));
+        }
       } else {
-        throw 'No se pudo abrir WhatsApp';
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content:
+                Text('No se pudo abrir WhatsApp. Verifique si está instalado.'),
+          ));
+        }
+        if (kDebugMode) {
+          print('No se pudo abrir WhatsApp. Verifique si está instalado.');
+        }
       }
     } catch (e) {
-      // Manejo de errores: muestra un mensaje al usuario y registra el error en la consola
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al enviar por WhatsApp: $e'),
+          ),
+        );
+      }
       if (kDebugMode) {
         print('Error al enviar por WhatsApp: $e');
       }
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error al enviar por WhatsApp: $e'),
-        ),
-      );
     }
+  }
+
+  Future<String> _obtenerDetallesDelCarrito(Carrito carrito) async {
+    String detalles = '';
+    for (var item in carrito.items.values) {
+      detalles +=
+          '${item.nombre} - Cantidad: ${item.cantidad} - Total: C\$${(item.precio * item.cantidad).toStringAsFixed(2)}\n';
+    }
+    return detalles;
   }
 
   @override
   Widget build(BuildContext context) {
-    String detallesDelCarrito = '';
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Carrito'),
@@ -76,7 +91,7 @@ class PantallaCarrito extends StatelessWidget {
                           minHeight: 10,
                         ),
                         child: Text(
-                          '${carrito.totalItems}',
+                          '${carrito.numeroItems}',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 9,
@@ -109,8 +124,6 @@ class PantallaCarrito extends StatelessWidget {
                     itemCount: carrito.items.length,
                     itemBuilder: (context, index) {
                       final item = carrito.items.values.toList()[index];
-                      detallesDelCarrito +=
-                          '${item.nombre} - Cantidad: ${item.cantidad} - Total: C\$${(item.precio * item.cantidad).toStringAsFixed(2)}\n';
                       return Card(
                         elevation: 5,
                         margin: const EdgeInsets.symmetric(
@@ -261,10 +274,9 @@ class PantallaCarrito extends StatelessWidget {
                               TextButton(
                                 child: const Text('Enviar'),
                                 onPressed: () async {
-                                  Navigator.of(context)
-                                      .pop(); // Close the dialog
+                                  Navigator.of(context).pop();
                                   await _enviarPedidoPorWhatsApp(
-                                      context, detallesDelCarrito);
+                                      context, carrito);
                                 },
                               ),
                             ],
