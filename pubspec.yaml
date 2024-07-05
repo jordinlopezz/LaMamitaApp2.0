@@ -1,0 +1,47 @@
+name: flutter_restaurante_1
+description: "A new Flutter project."
+publish_to: 'none' # Si deseas publicar en pub.dev, elimina esta línea
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.17.0 <3.0.0'   # Asegúrate de tener al menos la versión 2.12.0 para null safety
+
+dependencies:
+  flutter:
+    sdk: flutter
+  permission_handler: ^8.2.7
+  provider: ^5.0.0
+  url_launcher: ^6.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/img/background.jpg
+    - assets/img/logo.png
+    - assets/img/profile_image.png
+    - assets/img/vigoron.png
+    - assets/img/carneasada.jpg
+    - assets/img/quesillo.webp
+    - assets/img/enchilada.jpg
+    - assets/img/cacao.jpg
+    - assets/img/pinolillo.jpg
+    - assets/img/chicha_de_maiz.jpg
+    - assets/img/tiste.jpg
+    - assets/img/tres_leches.jpg
+    - assets/img/pio_quinto.png
+    - assets/img/arroz_con_leche.jpg
+    - assets/img/bunuelos.png
+    - assets/img/nicaragua_restaurant.jpg  
+    - assets/img/facebook_logo.png
+    - assets/img/instagram_logo.png
+    - assets/img/twitter_logo.png
+    - assets/img/phone_icon.png
+    - assets/img/email_icon.png
+    - assets/img/location_icon.png
